@@ -1,7 +1,9 @@
 #ifndef _HUFFTREE_H_
 #define _HUFFTREE_H_
 
+#include <list>
 #include "symbol.h"
+#include "source.h"
 
 class HuffmanNode
 {
@@ -9,7 +11,7 @@ class HuffmanNode
   HuffmanNode *leftNode, *rightNode;
   float probability;
 public:
-  void getCodification(std::list <Symbol> symbolList)
+  void getCodification(std::list <Symbol> symbolList);
   virtual bool isLeaf();
 };
 

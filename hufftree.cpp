@@ -12,26 +12,15 @@ bool HuffmanLeaf::isLeaf()
 
 void HuffmanTree::buildHuffmanTree(Source source)
 {
-  symbolList(source.getSymbolList);
+	symbolList(source.getSymbolList());
   rootNode = new HuffmanNode();
 
   rootNode->getCodification(symbolList);
 }
 
-/*{
-  float minProb = 100.0f;
-  std::list <Symbol>::iterator it;
-  std::list <Symbol>::iterator minIt;
-
-  for (it = symbolList.begin(); it != symbolList.end(); it++)
-  {
-    if (minProb > (*it).getProbability())
-      minProb = (*it).getProbability();
-    minIt = (*it);
-  }
-  return minSymbol;
-}*/
-
 void HuffmanNode::getCodification(std::list <Symbol> symbolList)
 {
+	std::list <Symbol>::iterator it1 = symbolList.begin();
+	float minProb = 100.0f;
+
 }
