@@ -8,7 +8,6 @@
 
 class Source
 {
-  Symbol *symbols;
   std::map <char, unsigned int> symbolCounter;
   std::list <Symbol> symbolList;
   unsigned int totalSymbols;
