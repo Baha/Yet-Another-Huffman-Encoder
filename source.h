@@ -4,11 +4,12 @@
 #include <cstdio>
 #include <map>
 #include <list>
+#include <vector>
+#include <queue>
 #include "symbol.h"
 
 class Source
 {
-  Symbol *symbols;
   std::map <char, unsigned int> symbolCounter;
   std::list <Symbol> symbolList;
   unsigned int totalSymbols;
@@ -16,7 +17,7 @@ public:
   void getFrequencies(FILE *input);
   void getProbabilities();
   void getProperties(FILE *input);
-  std::list <Symbol> getSymbolList();
+	void solveHuffman();
   void showProperties();
 };
 

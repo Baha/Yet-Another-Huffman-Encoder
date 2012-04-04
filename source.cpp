@@ -49,9 +49,28 @@ void Source::getProperties(FILE *input)
   this->getProbabilities();
 }
 
-std::list <Symbol> Source::getSymbolList()
+void Source::solveHuffman()
 {
-  return this->symbolList;
+	std::priority_queue <Symbol, std::vector <Symbol> , SymbolComp> symbolQueue; 
+	std::list <Symbol>::iterator it;
+
+	for (it = symbolList.begin(); it != symbolList.end(); it++)
+	{
+		Symbol newSymbol(*it);
+		symbolQueue.push(newSymbol);
+	}
+
+	while (symbolQueue.size() > 1)
+	{
+		Symbol symbol1 = symbolQueue.top();
+		symbolQueue.pop();
+
+		Symbol symbol2 = symbolQueue.top();
+		symbolQueue.pop();
+
+		CombinedSymbol newCombinedSymbol(symbol1, symbol2);
+		symbolQueue.push(newCombinedSymbol);
+	}
 }
 
 void Source::showProperties()
