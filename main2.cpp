@@ -22,8 +22,8 @@ int main(int argc, char* argv[])
   }
 
   source.getProperties(input);
-  source.showProperties();
 	source.solveHuffman();
+  source.showProperties();
 
   return 0;
 }

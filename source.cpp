@@ -56,8 +56,8 @@ void Source::solveHuffman()
 
 	for (it = symbolList.begin(); it != symbolList.end(); it++)
 	{
-		Symbol newSymbol(*it);
-		symbolQueue.push(newSymbol);
+ //		Symbol newSymbol(*it);
+		symbolQueue.push(*it);
 	}
 
 	while (symbolQueue.size() > 1)
@@ -91,5 +91,13 @@ void Source::showProperties()
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
     printf("%c => %f\n", it2->getLabel(), it2->getProbability());
   
+  printf("The codifications for the symbols are...\n");
+
+  for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
+  {
+    printf("%c => ", it2->getLabel());
+    it2->getCodification();
+    printf("\n");
+  }
   printf("\n");
 }
