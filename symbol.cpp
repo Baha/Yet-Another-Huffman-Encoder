@@ -1,5 +1,10 @@
 #include "symbol.h"
 
+Symbol::Symbol()
+{
+  this->fatherSymbol = 0;
+}
+
 bool Symbol::symbolIsEncodable(char symbol)
 {
   return (symbol >= 32 && symbol <= 126); // might need some changes
@@ -45,31 +50,42 @@ Symbol* Symbol::getRightChild()
 	return 0;
 }
 
+std::string Symbol::getCodification()
+{
+  return this->codification;
+}
+
 bool Symbol::isCombined()
 {
   return false;
 }
 
-void Symbol::getCodification()
+void Symbol::obtainCodification()
 {
 	Symbol* father = this->getFather();
+  std::string tmpCodification = "";
 
-	if (father == 0)
-		printf("\n");
-	else
+	while (!(father == 0))
+  {
 		if (father->getLeftChild() == this)
-			printf("0");
+			tmpCodification.push_back('0');
 		else
-			printf("1");
+      tmpCodification.push_back('1');
+    father = father->getFather();
+  }
+
+  codification = "";
+  for (int i = tmpCodification.length() - 1; i >= 0; i--)
+    codification.push_back(tmpCodification[i]);
 }
 
-CombinedSymbol::CombinedSymbol(Symbol symbol1, Symbol symbol2)
+CombinedSymbol::CombinedSymbol(Symbol* symbol1, Symbol* symbol2)
 {
-	this->probability = symbol1.getProbability() + symbol2.getProbability();
-	this->leftChild = &symbol1;
-	this->rightChild = &symbol2;
-	symbol1.setFather(this);
-	symbol2.setFather(this);
+	this->probability = symbol1->getProbability() + symbol2->getProbability();
+	this->leftChild = symbol1;
+	this->rightChild = symbol2;
+	symbol1->setFather(this);
+	symbol2->setFather(this);
 }
 
 Symbol* CombinedSymbol::getLeftChild()

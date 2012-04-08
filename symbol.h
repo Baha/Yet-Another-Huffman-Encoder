@@ -3,14 +3,17 @@
 
 #include <iostream>
 #include <cstdio>
+#include <string>
 
 class Symbol
 {
 protected:
   char label;
   float probability;
+  std::string codification;
 	Symbol *fatherSymbol;
 public:
+  Symbol();
   static bool symbolIsEncodable(char symbol);
   void setLabel(char label);
   char getLabel();
@@ -20,8 +23,9 @@ public:
 	Symbol* getFather();
 	virtual Symbol* getLeftChild();
 	virtual Symbol* getRightChild();
+	std::string getCodification();
   virtual bool isCombined();
-	void getCodification();
+  void obtainCodification();
 };
 
 class CombinedSymbol : public Symbol
@@ -29,7 +33,7 @@ class CombinedSymbol : public Symbol
 protected:
   Symbol *leftChild, *rightChild;
 public:
-	CombinedSymbol(Symbol symbol1, Symbol symbol2);
+	CombinedSymbol(Symbol* symbol1, Symbol* symbol2);
 	Symbol* getLeftChild();
 	Symbol* getRightChild();
   bool isCombined();
@@ -37,9 +41,9 @@ public:
 
 struct SymbolComp : public std::binary_function < Symbol, Symbol, bool >
 {
-	bool operator ()(Symbol& symbol1, Symbol& symbol2) const
+	bool operator ()(Symbol* symbol1, Symbol* symbol2) const
 	{
-		return (symbol1.getProbability() > symbol2.getProbability());
+		return (symbol1->getProbability() > symbol2->getProbability());
 	}
 };
 

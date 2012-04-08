@@ -34,10 +34,10 @@ void Source::getProbabilities()
   {
     float lab = (*it).first;
     float prob = (float)((*it).second) / (float)totalSymbols;
-    Symbol newSymbol;
+    Symbol* newSymbol = new Symbol();
 
-    newSymbol.setLabel(lab);
-    newSymbol.setProbability(prob);
+    newSymbol->setLabel(lab);
+    newSymbol->setProbability(prob);
 
     symbolList.push_back(newSymbol);
   }
@@ -51,24 +51,21 @@ void Source::getProperties(FILE *input)
 
 void Source::solveHuffman()
 {
-	std::priority_queue <Symbol, std::vector <Symbol> , SymbolComp> symbolQueue; 
-	std::list <Symbol>::iterator it;
+	std::priority_queue <Symbol*, std::vector <Symbol*> , SymbolComp> symbolQueue; 
+	std::list <Symbol*>::iterator it;
 
 	for (it = symbolList.begin(); it != symbolList.end(); it++)
-	{
- //		Symbol newSymbol(*it);
-		symbolQueue.push(*it);
-	}
+		symbolQueue.push(*it); 
 
 	while (symbolQueue.size() > 1)
 	{
-		Symbol symbol1 = symbolQueue.top();
+		Symbol* symbol1 = symbolQueue.top();
 		symbolQueue.pop();
 
-		Symbol symbol2 = symbolQueue.top();
+		Symbol* symbol2 = symbolQueue.top();
 		symbolQueue.pop();
 
-		CombinedSymbol newCombinedSymbol(symbol1, symbol2);
+		CombinedSymbol* newCombinedSymbol = new CombinedSymbol(symbol1, symbol2);
 		symbolQueue.push(newCombinedSymbol);
 	}
 }
@@ -77,7 +74,7 @@ void Source::showProperties()
 {
   //debug version
   std::map<char, unsigned int>::iterator it;
-  std::list <Symbol>::iterator it2;
+  std::list <Symbol*>::iterator it2;
 
   printf("Total number of symbols read: %d\n", totalSymbols);
   printf("The frequencies for this file are...\n");
@@ -89,15 +86,15 @@ void Source::showProperties()
   printf("The probabilities for this file are...\n");
 
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
-    printf("%c => %f\n", it2->getLabel(), it2->getProbability());
+    printf("%c => %f\n", (*it2)->getLabel(), (*it2)->getProbability());
   
+  printf("\n");
   printf("The codifications for the symbols are...\n");
 
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
   {
-    printf("%c => ", it2->getLabel());
-    it2->getCodification();
-    printf("\n");
+    (*it2)->obtainCodification();
+    printf("%c => %s\n", (*it2)->getLabel(), ((*it2)->getCodification()).c_str());
   }
   printf("\n");
 }
