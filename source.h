@@ -12,6 +12,7 @@ class Source
 {
   std::map <char, unsigned int> symbolCounter;
   std::list <Symbol*> symbolList;
+  Symbol* rootSymbol;
   unsigned int totalSymbols;
 public:  
   void getFrequencies(FILE *input);

@@ -68,6 +68,7 @@ void Source::solveHuffman()
 		CombinedSymbol* newCombinedSymbol = new CombinedSymbol(symbol1, symbol2);
 		symbolQueue.push(newCombinedSymbol);
 	}
+  rootSymbol = symbolQueue.top();
 }
 
 void Source::showProperties()
