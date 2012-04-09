@@ -26,7 +26,9 @@ public:
   std::string getSerial();
 	void solveHuffman();
   void serializeTree();
+  void unserializeTree(FILE *input);
   void writeCodifiedFile(char* inputFileName);
+  void writeUncodifiedFile(FILE *input, char* outputFileName);
   void showProperties();
 };
 

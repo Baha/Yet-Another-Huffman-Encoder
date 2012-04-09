@@ -96,6 +96,26 @@ void Symbol::serializeNode(std::string* serial)
   }
 }
 
+Symbol* Symbol::unserializeNode(FILE *input)
+{
+  char cur_c = fgetc(input);
+  Symbol* newSymbol;
+
+  if (cur_c == '0')
+  {
+    Symbol* symbol1 = Symbol::unserializeNode(input);
+    Symbol* symbol2 = Symbol::unserializeNode(input);
+    newSymbol = new CombinedSymbol(symbol1, symbol2);
+  }
+  else // cur_c == '1'
+  {
+    newSymbol = new Symbol();
+    cur_c = fgetc(input);
+    newSymbol->setLabel(cur_c);
+  }
+  return newSymbol;
+}
+
 CombinedSymbol::CombinedSymbol(Symbol* symbol1, Symbol* symbol2)
 {
 	this->probability = symbol1->getProbability() + symbol2->getProbability();
@@ -105,9 +125,21 @@ CombinedSymbol::CombinedSymbol(Symbol* symbol1, Symbol* symbol2)
 	symbol2->setFather(this);
 }
 
+void CombinedSymbol::setLeftChild(Symbol* symbol)
+{
+  this->leftChild = symbol;
+  symbol->setFather(this);
+}
+  
 Symbol* CombinedSymbol::getLeftChild()
 {
 	return this->leftChild;
+}
+
+void CombinedSymbol::setRightChild(Symbol* symbol)
+{
+  this->rightChild = symbol;
+  symbol->setFather(this);
 }
 
 Symbol* CombinedSymbol::getRightChild()

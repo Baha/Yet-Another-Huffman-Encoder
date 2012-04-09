@@ -28,12 +28,16 @@ public:
   virtual bool isCombined();
   void obtainCodification();
   void serializeNode(std::string* serial);
+  static Symbol* unserializeNode(FILE* input);
 };
 
 class CombinedSymbol : public Symbol
 {
 public:
+  CombinedSymbol(){ }; //FIXME
 	CombinedSymbol(Symbol* symbol1, Symbol* symbol2);
+  void setLeftChild(Symbol* symbol);
+  void setRightChild(Symbol* symbol);
 	Symbol* getLeftChild();
 	Symbol* getRightChild();
   bool isCombined();

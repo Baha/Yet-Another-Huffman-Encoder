@@ -49,6 +49,11 @@ void Source::getProperties(FILE *input)
   this->getProbabilities();
 }
 
+std::string Source::getSerial()
+{
+  return this->serial; 
+}
+
 void Source::solveHuffman()
 {
 	std::priority_queue <Symbol*, std::vector <Symbol*> , SymbolComp> symbolQueue; 
@@ -81,9 +86,30 @@ void Source::solveHuffman()
   }
 }
 
-std::string Source::getSerial()
+// maybe we can do an iterative version later...
+void Source::serializeTree()
 {
-  return this->serial; 
+  serial = "";
+  rootSymbol->serializeNode(&serial);
+}
+
+void Source::unserializeTree(FILE *input)
+{
+  char cur_c = fgetc(input);
+
+  if (cur_c == '0')
+  {
+    Symbol* symbol1 = Symbol::unserializeNode(input);
+    Symbol* symbol2 = Symbol::unserializeNode(input);
+    rootSymbol = new CombinedSymbol(symbol1, symbol2);
+  }
+  else
+  {
+    rootSymbol = new Symbol();
+    cur_c = fgetc(input);
+    rootSymbol->setLabel(cur_c);
+  }
+  this->serializeTree();
 }
 
 void Source::writeCodifiedFile(char* inputFileName)
@@ -139,12 +165,9 @@ void Source::writeCodifiedFile(char* inputFileName)
   fclose(output);
 }
 
-// maybe we can do an iterative version later...
-void Source::serializeTree()
+void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 {
-  serial = "";
-  rootSymbol->serializeNode(&serial);
-  printf("%s\n", serial.c_str());
+
 }
 
 void Source::showProperties()

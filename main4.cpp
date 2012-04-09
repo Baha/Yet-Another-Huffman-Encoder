@@ -7,9 +7,9 @@ int main(int argc, char* argv[])
   FILE *input;
   Source source;
 
-  if (argc != 2)
+  if (argc != 3)
   {
-    printf("Uso: ./<programa> <fichero_entrada>\n");
+    printf("Uso: ./<programa> <fichero_entrada> <fichero_salida>\n");
     return(-1);
   }
 
@@ -21,10 +21,8 @@ int main(int argc, char* argv[])
     return(-1);
   }
 
-  source.getProperties(input);
-	source.solveHuffman();
-  source.showProperties();
-  source.writeCodifiedFile(argv[1]);
+  source.unserializeTree(input);
+  source.writeUncodifiedFile(input, argv[2]);
 
   return 0;
 }
