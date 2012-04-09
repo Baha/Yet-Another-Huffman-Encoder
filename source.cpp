@@ -68,7 +68,67 @@ void Source::solveHuffman()
 		CombinedSymbol* newCombinedSymbol = new CombinedSymbol(symbol1, symbol2);
 		symbolQueue.push(newCombinedSymbol);
 	}
+  // for serializing later...
   rootSymbol = symbolQueue.top();
+
+  // for codifying later...
+  codificationTable.clear();
+
+  for (it = symbolList.begin(); it != symbolList.end(); it++)
+  { 
+    (*it)->obtainCodification();
+    codificationTable[(*it)->getLabel()] = (*it)->getCodification();
+  }
+}
+
+void Source::writeCodifiedFile(char* inputFileName)
+{
+  FILE *input;
+  FILE *output;
+  std::string outputFileName;
+  char* dotPointer;
+  char cur_input;
+
+  input = fopen(inputFileName, "r");
+
+  if (input == NULL)
+  {
+    printf("Fichero de entrada no encontrado.\n");
+    exit(-1);
+  }
+
+  dotPointer = strchr(inputFileName, '.');
+
+  if (dotPointer != NULL)
+    *dotPointer = '\0';
+    
+  outputFileName = inputFileName;
+  outputFileName += ".huf";
+
+  output = fopen(outputFileName.c_str(), "w");
+  
+  if (output == NULL)
+  {
+    printf("Fichero de salida no pudo crearse.\n");
+    exit(-1);
+  }
+
+  // a partir de aqui, operar con los ficheros
+  cur_input = fgetc(input);
+
+  while (cur_input != EOF)
+  {
+    if (Symbol::symbolIsEncodable(cur_input))
+      fprintf(output, "%s", codificationTable[cur_input].c_str());
+    // next 2 lines are for debugging only
+    else if (cur_input == '\n')
+      fprintf(output, "\n");
+    // until here
+    cur_input = fgetc(input);
+  }
+
+  fclose(input);
+  fclose(output);
 }
 
 void Source::showProperties()
@@ -94,7 +154,6 @@ void Source::showProperties()
 
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
   {
-    (*it2)->obtainCodification();
     printf("%c => %s\n", (*it2)->getLabel(), ((*it2)->getCodification()).c_str());
   }
   printf("\n");

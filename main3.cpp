@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
   source.getProperties(input);
 	source.solveHuffman();
   source.showProperties();
-  //source.writeCodifiedFile(argv[1]);
+  source.writeCodifiedFile(argv[1]);
 
   return 0;
 }

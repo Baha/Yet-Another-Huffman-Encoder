@@ -63,15 +63,17 @@ bool Symbol::isCombined()
 void Symbol::obtainCodification()
 {
 	Symbol* father = this->getFather();
+  Symbol* child = this;
   std::string tmpCodification = "";
 
 	while (!(father == 0))
   {
-		if (father->getLeftChild() == this)
+		if (father->getLeftChild() == child)
 			tmpCodification.push_back('0');
-		else
+		else if (father->getRightChild() == child)
       tmpCodification.push_back('1');
     father = father->getFather();
+    child = child->getFather();
   }
 
   codification = "";
