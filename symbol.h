@@ -12,6 +12,7 @@ protected:
   float probability;
   std::string codification;
 	Symbol *fatherSymbol;
+  Symbol *leftChild, *rightChild;
 public:
   Symbol();
   static bool symbolIsEncodable(char symbol);
@@ -26,12 +27,11 @@ public:
 	std::string getCodification();
   virtual bool isCombined();
   void obtainCodification();
+  void serializeNode(std::string* serial);
 };
 
 class CombinedSymbol : public Symbol
 {
-protected:
-  Symbol *leftChild, *rightChild;
 public:
 	CombinedSymbol(Symbol* symbol1, Symbol* symbol2);
 	Symbol* getLeftChild();

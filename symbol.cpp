@@ -81,6 +81,21 @@ void Symbol::obtainCodification()
     codification.push_back(tmpCodification[i]);
 }
 
+void Symbol::serializeNode(std::string* serial)
+{
+  if (this->isCombined())
+  {
+    serial->append("0");
+    leftChild->serializeNode(serial);
+    rightChild->serializeNode(serial);
+  }
+  else
+  {
+    serial->append("1");
+    serial->push_back(this->getLabel());
+  }
+}
+
 CombinedSymbol::CombinedSymbol(Symbol* symbol1, Symbol* symbol2)
 {
 	this->probability = symbol1->getProbability() + symbol2->getProbability();

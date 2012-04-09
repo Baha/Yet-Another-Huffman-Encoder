@@ -81,6 +81,11 @@ void Source::solveHuffman()
   }
 }
 
+std::string Source::getSerial()
+{
+  return this->serial; 
+}
+
 void Source::writeCodifiedFile(char* inputFileName)
 {
   FILE *input;
@@ -112,6 +117,9 @@ void Source::writeCodifiedFile(char* inputFileName)
     printf("Fichero de salida no pudo crearse.\n");
     exit(-1);
   }
+  
+  // write serial
+  fprintf(output, "%s\n", (this->getSerial().c_str())); 
 
   // a partir de aqui, operar con los ficheros
   cur_input = fgetc(input);
@@ -129,6 +137,14 @@ void Source::writeCodifiedFile(char* inputFileName)
 
   fclose(input);
   fclose(output);
+}
+
+// maybe we can do an iterative version later...
+void Source::serializeTree()
+{
+  serial = "";
+  rootSymbol->serializeNode(&serial);
+  printf("%s\n", serial.c_str());
 }
 
 void Source::showProperties()

@@ -18,11 +18,14 @@ class Source
   std::list <Symbol*> symbolList;
   Symbol* rootSymbol;
   unsigned int totalSymbols;
+  std::string serial;
 public:  
   void getFrequencies(FILE *input);
   void getProbabilities();
   void getProperties(FILE *input);
+  std::string getSerial();
 	void solveHuffman();
+  void serializeTree();
   void writeCodifiedFile(char* inputFileName);
   void showProperties();
 };
