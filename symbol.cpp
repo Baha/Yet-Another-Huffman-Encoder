@@ -116,6 +116,20 @@ Symbol* Symbol::unserializeNode(FILE *input)
   return newSymbol;
 }
 
+void Symbol::addToListIfNotCombined(std::list <Symbol*> *symbolList)
+{
+	if (this->isCombined())
+	{
+		Symbol *symbol1 = getLeftChild();
+		Symbol *symbol2 = getRightChild();
+
+		symbol1->addToListIfNotCombined(symbolList);
+		symbol2->addToListIfNotCombined(symbolList);
+	}
+	else
+		symbolList->push_back(this);
+}
+
 CombinedSymbol::CombinedSymbol(Symbol* symbol1, Symbol* symbol2)
 {
 	this->probability = symbol1->getProbability() + symbol2->getProbability();

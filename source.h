@@ -15,6 +15,7 @@ class Source
 {
   std::map <char, unsigned int> symbolCounter;
   std::map <char, std::string> codificationTable;
+	std::map <std::string, char> decodificationTable;
   std::list <Symbol*> symbolList;
   Symbol* rootSymbol;
   unsigned int totalSymbols;
@@ -29,6 +30,9 @@ public:
   void unserializeTree(FILE *input);
   void writeCodifiedFile(char* inputFileName);
   void writeUncodifiedFile(FILE *input, char* outputFileName);
+	void buildSymbolList();
+	void buildCodeList();
+	bool stringInCodeList(std::string binaryString);
   void showProperties();
 };
 

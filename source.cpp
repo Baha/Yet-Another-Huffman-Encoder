@@ -96,6 +96,7 @@ void Source::serializeTree()
 void Source::unserializeTree(FILE *input)
 {
   char cur_c = fgetc(input);
+	symbolList.clear();
 
   if (cur_c == '0')
   {
@@ -110,6 +111,7 @@ void Source::unserializeTree(FILE *input)
     rootSymbol->setLabel(cur_c);
   }
   this->serializeTree();
+	fgetc(input);
 }
 
 void Source::writeCodifiedFile(char* inputFileName)
@@ -167,7 +169,59 @@ void Source::writeCodifiedFile(char* inputFileName)
 
 void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 {
+	char cur_c = fgetc(input);
+	FILE* output;
+	std::string binaryString = "";
 
+	buildSymbolList();
+	buildCodeList();
+
+	output = fopen(outputFileName, "w");
+  
+  if (output == NULL)
+  {
+    printf("Fichero de salida no pudo crearse.\n");
+    exit(-1);
+  }
+
+	while (cur_c != EOF)
+	{
+		if (Symbol::symbolIsEncodable(cur_c))
+		{
+			binaryString.push_back(cur_c);
+			if (stringInCodeList(binaryString))
+			{
+				fprintf(output, "%c", decodificationTable[binaryString]);
+				binaryString = "";
+			}
+		}
+		else if (cur_c == '\n')
+			fprintf(output, "\n");
+		cur_c = fgetc(input);
+	}
+}
+
+void Source::buildSymbolList()
+{
+	rootSymbol->addToListIfNotCombined(&symbolList);
+}
+
+void Source::buildCodeList()
+{
+	std::list <Symbol*>::iterator it;
+
+	decodificationTable.clear();
+
+	for (it = symbolList.begin(); it != symbolList.end(); it++)
+  {
+		(*it)->obtainCodification();
+    decodificationTable[((*it)->getCodification())] = (*it)->getLabel();
+  }
+}
+
+bool Source::stringInCodeList(std::string binaryString)
+{
+	return (decodificationTable.find(binaryString) != decodificationTable.end());
 }
 
 void Source::showProperties()

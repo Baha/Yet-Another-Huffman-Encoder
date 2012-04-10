@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string>
+#include <list>
 
 class Symbol
 {
@@ -29,6 +30,7 @@ public:
   void obtainCodification();
   void serializeNode(std::string* serial);
   static Symbol* unserializeNode(FILE* input);
+	void addToListIfNotCombined(std::list <Symbol*> *symbolList);
 };
 
 class CombinedSymbol : public Symbol
