@@ -1,3 +1,9 @@
+/**
+ * @file
+ * Defines the structure of the Symbol class and every
+ * class related to it.
+ */
+
 #ifndef _SYMBOL_H_
 #define _SYMBOL_H_
 
