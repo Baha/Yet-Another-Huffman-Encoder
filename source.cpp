@@ -1,5 +1,13 @@
 #include "source.h"
 
+/**
+ * This methods reads the input file looking for the
+ * symbols to be encoded, and puts them on a table
+ * with the purpose of counting the number of
+ * appearances.
+ *
+ * @param input The file that we are reading from. 
+ */
 void Source::getFrequencies(FILE *input)
 {
   FILE *in = input;
@@ -26,6 +34,14 @@ void Source::getFrequencies(FILE *input)
   }
 }
 
+/**
+ * After counting the frequencies, the next step is to
+ * get the total probabilities.
+ *
+ * Later, we create the basic symbols for the source with
+ * the data we have analyzed and we put them on the symbol
+ * list.
+ */
 void Source::getProbabilities()
 {
   std::map<char, unsigned int>::iterator it;
@@ -43,17 +59,43 @@ void Source::getProbabilities()
   }
 }
 
+/**
+ * This is a wrapper for getting the frequencies
+ * and then the probabilities.
+ */
 void Source::getProperties(FILE *input)
 {
   this->getFrequencies(input);
   this->getProbabilities();
 }
 
+/**
+ * A getter for the attribute "serial".
+ */
 std::string Source::getSerial()
 {
   return this->serial; 
 }
 
+/**
+ * The algorithm for solving the Huffman encoding is a greedy algorithm
+ * that must select the two symbols with the lowest probabilites and add
+ * another one with sum of its probabilities.
+ *
+ * This can be solved by using a priority queue as I did, and in fact, it
+ * is an optimal solution:
+ * 
+ * We just create the queue associating it to the functor we created for
+ * establishing an ascendant order in the queue.
+ *
+ * Later we add the elements from the symbol list, and then we start the
+ * algorithm, popping 2 symbols from the queue and adding another one that
+ * we create from the symbols we extracted before.
+ *
+ * Finally, we store the last element on the queue (the root node for the
+ * tree) and we obtain the codification for the symbols in the original
+ * symbol list.
+ */
 void Source::solveHuffman()
 {
 	std::priority_queue <Symbol*, std::vector <Symbol*> , SymbolComp> symbolQueue; 
@@ -86,13 +128,32 @@ void Source::solveHuffman()
   }
 }
 
-// maybe we can do an iterative version later...
+/**
+ * This function just resets the serial and calls the method
+ * for serializing from the root node.
+ */
 void Source::serializeTree()
 {
   serial = "";
   rootSymbol->serializeNode(&serial);
 }
 
+/**
+ * This method analyzes the character being read
+ * (in this case, the first one from the serial)
+ * and calls the same method from the childs in
+ * case the characters is a 0 and returns an unique
+ * symbol if it is a 1.
+ *
+ * Note that this is a particular case for the root
+ * node.
+ *
+ * In the end we call the serializeTree() method so
+ * we can build the serial from the tree.
+ *
+ * @param input The descriptor of the file that
+ * we are reading from.
+ */
 void Source::unserializeTree(FILE *input)
 {
   char cur_c = fgetc(input);
@@ -114,6 +175,21 @@ void Source::unserializeTree(FILE *input)
 	fgetc(input);
 }
 
+/**
+ * This method can be used after solving the Huffman
+ * algorithm and obtaining the codification for the
+ * original symbols.
+ *
+ * It will use the name of the input file passed as
+ * the first argument to determine the name of the
+ * output file.
+ *
+ * It will create and then it will write the codifications
+ * for the symbols it reads from the input in the output
+ * file.
+ *
+ * @param inputFileName The name of the input file.
+ */
 void Source::writeCodifiedFile(char* inputFileName)
 {
   FILE *input;
@@ -167,6 +243,21 @@ void Source::writeCodifiedFile(char* inputFileName)
   fclose(output);
 }
 
+/**
+ * This method makes the reverse operation of writing a codified
+ * file.
+ *
+ * It will look for the codes after having built the
+ * binary tree from the serial put in the first line of the header.
+ * Then it will start reading the codes and printing the original
+ * symbols to the output file.
+ *
+ * @param input The descriptor of the codified file that we are
+ * reading from.
+ *
+ * @param outputFileName The name of the file (it is passed by\
+ * the user as the second parameter of the main program.
+ */
 void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 {
 	char cur_c = fgetc(input);
@@ -201,11 +292,21 @@ void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 	}
 }
 
+/**
+ * This function triggers the addToListIfNotCombined
+ * from the root node so we get the original symbols
+ * in the symbol list.
+ */
 void Source::buildSymbolList()
 {
 	rootSymbol->addToListIfNotCombined(&symbolList);
 }
 
+/**
+ * This method looks for the symbols in the symbol list
+ * and makes a table that relates its codification with
+ * its label. 
+ */
 void Source::buildCodeList()
 {
 	std::list <Symbol*>::iterator it;
@@ -219,14 +320,21 @@ void Source::buildCodeList()
   }
 }
 
+/**
+ * This methods verifies it the decodification table contains a code.
+ *
+ * @param binaryString The binary code that is being searched in the table.
+ */
 bool Source::stringInCodeList(std::string binaryString)
 {
 	return (decodificationTable.find(binaryString) != decodificationTable.end());
 }
 
+/**
+ * A function for showing the statistics and results from the program.
+ */
 void Source::showProperties()
 {
-  //debug version
   std::map<char, unsigned int>::iterator it;
   std::list <Symbol*>::iterator it2;
 
