@@ -1,9 +1,3 @@
-/**
- * @file 
- * The file with the code for the methods of the
- * Symbol class.
- */
-
 #include "symbol.h"
 
 /**
