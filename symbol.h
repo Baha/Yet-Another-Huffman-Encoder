@@ -145,13 +145,39 @@ public:
 	 */
   void obtainCodification();
 	/**
+	 * This method is recursive and it is called by the
+	 * symbols to get the serial corresponding to the
+	 * binary tree.
+	 *
+	 * If the current node is a CombinedSymbol, we
+	 * will make a recursive call for serializing
+	 * the leftChild and the RightChild, while appending
+	 * a 0 to the serial.
 	 * 
+	 * If it is not, then we append a 1 to the serial
+	 * and the label of this symbol.
 	 */
   void serializeNode(std::string* serial);
+	/**
+	 * 
+	 */
   static Symbol* unserializeNode(FILE* input);
+	/**
+	 *
+	 */
 	void addToListIfNotCombined(std::list <Symbol*> *symbolList);
 };
 
+/**
+ * The CombinedSymbol class represents the union of two
+ * symbols in one.
+ *
+ * While solving the Huffman algorithm, every iteration
+ * we should get a new source with the same number of symbols
+ * as the previous iteration minus one.
+ *
+ * The "label" atributte is not used.
+ */
 class CombinedSymbol : public Symbol
 {
 public:
