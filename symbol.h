@@ -67,121 +67,37 @@ protected:
 	 */
 	Symbol *rightChild;
 public:
-	/**
-	 * Void constructor for the Symbol class
-	 */
   Symbol();
-
-	/**
-	 * A method for determining if the symbol is encodable.
-	 * 
-	 * It is used while the input file is being read, so
-	 * it counts only those symbols that we want to encode.
-	 * 
-	 * @param symbol The symbol that we want to know if is
-	 * encodable
-	 */
   static bool symbolIsEncodable(char symbol);
-
-	/**
-	 * A setter for the attribute "label".
-	 * 
-	 * @param label The value that we want the "label" field
-	 * to be set.
-	 */
   void setLabel(char label);
-
-	/**
-	 * A getter for the attribute "label".
-	 */
   char getLabel();
-	/**
-	 * A setter for the attribute "probability".
-	 * 
-	 * @param probability The value that we want the "probability" field
-	 * to be set.
-	 */
   void setProbability(float probability);
-	/**
-	 * A getter for the attribute "probability".
-	 */
   float getProbability() const;
-	/**
-	 * A setter for the attribute "fatherSymbol".
-	 * 
-	 * @param symbol The symbol that we want the "fatherSymbol" field
-	 * to point.
-	 */
 	void setFather(Symbol* symbol);
-	/**
-	 * A getter for the attribute "fatherSymbol".
-	 */
 	Symbol* getFather();
-	/**
-	 * A getter for the attribute "leftChild".
-	 */
 	virtual Symbol* getLeftChild();
-	/**
-	 * A getter for the attribute "rightChild".
-	 */
 	virtual Symbol* getRightChild();
-	/**
-	 * A getter for the attribute "codification".
-	 */
 	std::string getCodification();
-	/**
-	 * A virtual function to know if this is a Symbol
-	 * object or a CombinedSymbol object.
-	 */
   virtual bool isCombined();
-	/**
-	 * A function to set the "codification" value to
-	 * the correct value once the Huffman algorithm
-	 * has been executed (the tree has been obtained).
-	 *
-	 * The function makes the symbol to look for its
-	 * fathers and getting the binary values for its
-	 * codification while doing it.
-	 */
   void obtainCodification();
-	/**
-	 * This method is recursive and it is called by the
-	 * symbols to get the serial corresponding to the
-	 * binary tree.
-	 *
-	 * If the current node is a CombinedSymbol, we
-	 * will make a recursive call for serializing
-	 * the leftChild and the RightChild, while appending
-	 * a 0 to the serial.
-	 * 
-	 * If it is not, then we append a 1 to the serial
-	 * and the label of this symbol.
-	 */
   void serializeNode(std::string* serial);
-	/**
-	 * 
-	 */
   static Symbol* unserializeNode(FILE* input);
-	/**
-	 *
-	 */
 	void addToListIfNotCombined(std::list <Symbol*> *symbolList);
 };
 
 /**
  * The CombinedSymbol class represents the union of two
- * symbols in one.
+ * symbols in one, and it is necessary for obtaining the
+ * solution of the Huffman algorithm.
  *
- * While solving the Huffman algorithm, every iteration
- * we should get a new source with the same number of symbols
- * as the previous iteration minus one.
+ * This will be the class of the nodes that are not leaves
+ * in the binary tree.
  *
  * The "label" atributte is not used.
  */
 class CombinedSymbol : public Symbol
 {
 public:
-  CombinedSymbol(){ }; //FIXME
 	CombinedSymbol(Symbol* symbol1, Symbol* symbol2);
   void setLeftChild(Symbol* symbol);
   void setRightChild(Symbol* symbol);
@@ -190,8 +106,26 @@ public:
   bool isCombined();
 };
 
+/**
+ * This structure is a functor for the priority queue that will
+ * be used in the source class for executing the Huffman algorithm.
+ *
+ * It only includes the operator for comparing two elements of the
+ * Symbol class between them so the priority queue can sort the
+ * elements automatically.
+ */
 struct SymbolComp : public std::binary_function < Symbol, Symbol, bool >
 {
+	/**
+	 * The operator for comparing two Symbol objects.
+	 *
+	 * It is made so the symbol with less probability will be closer
+	 * to the top of the symbols, this is, the queue will be sorted
+	 * in ascending order of probability.
+	 *
+	 * This way we can get the symbols with lower probabilities from
+	 * the top.
+	 */
 	bool operator ()(Symbol* symbol1, Symbol* symbol2) const
 	{
 		return (symbol1->getProbability() > symbol2->getProbability());
