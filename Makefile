@@ -9,3 +9,6 @@ ex3: symbol.cpp symbol.h source.cpp source.h main3.cpp
 
 ex4: symbol.cpp symbol.h source.cpp source.h main4.cpp
 	g++ symbol.cpp source.cpp main4.cpp -o modulo4
+
+bin: binarizer.cpp binarizer.h mainbin.cpp
+	g++ binarizer.cpp mainbin.cpp -o binarizer
