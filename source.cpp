@@ -172,7 +172,6 @@ void Source::unserializeTree(FILE *input)
     rootSymbol->setLabel(cur_c);
   }
   this->serializeTree();
-	fgetc(input);
 }
 
 /**
@@ -197,6 +196,7 @@ void Source::writeCodifiedFile(char* inputFileName)
   std::string outputFileName;
   char* dotPointer;
   char cur_input;
+	Binarizer* binarizer = new Binarizer();
 
   input = fopen(inputFileName, "r");
 
@@ -209,6 +209,7 @@ void Source::writeCodifiedFile(char* inputFileName)
   dotPointer = strchr(inputFileName, '.');
 
   if (dotPointer != NULL)
+
     *dotPointer = '\0';
     
   outputFileName = inputFileName;
@@ -223,7 +224,7 @@ void Source::writeCodifiedFile(char* inputFileName)
   }
   
   // write serial
-  fprintf(output, "%s\n", (this->getSerial().c_str())); 
+  fprintf(output, "%s ", (this->getSerial().c_str())); 
 
   // a partir de aqui, operar con los ficheros
   cur_input = fgetc(input);
@@ -231,13 +232,11 @@ void Source::writeCodifiedFile(char* inputFileName)
   while (cur_input != EOF)
   {
     if (Symbol::symbolIsEncodable(cur_input))
-      fprintf(output, "%s", codificationTable[cur_input].c_str());
-    // next 2 lines are for debugging only
-    else if (cur_input == '\n')
-      fprintf(output, "\n");
-    // until here
+			binarizer->addStringToCode(codificationTable[cur_input].c_str());
     cur_input = fgetc(input);
   }
+	fprintf(output, "%d\n", binarizer->getOffset());
+  fprintf(output, "%s", (binarizer->printCode()).c_str());
 
   fclose(input);
   fclose(output);
@@ -260,9 +259,19 @@ void Source::writeCodifiedFile(char* inputFileName)
  */
 void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 {
-	char cur_c = fgetc(input);
+	char cur_c;
 	FILE* output;
 	std::string binaryString = "";
+	Debinarizer* debinarizer = new Debinarizer();
+	int offset;
+
+	// delete ' '
+	fgetc(input);
+	// get offset
+	offset = fgetc(input) - '0';
+	debinarizer->setOffset(offset);
+	// delete '\n'
+	fgetc(input);
 
 	buildSymbolList();
 	buildCodeList();
@@ -275,21 +284,25 @@ void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
     exit(-1);
   }
 
+	cur_c = fgetc(input);
+
 	while (cur_c != EOF)
 	{
-		if (Symbol::symbolIsEncodable(cur_c))
-		{
-			binaryString.push_back(cur_c);
-			if (stringInCodeList(binaryString))
-			{
-				fprintf(output, "%c", decodificationTable[binaryString]);
-				binaryString = "";
-			}
-		}
-		else if (cur_c == '\n')
-			fprintf(output, "\n");
+		debinarizer->addCharToString(cur_c);
 		cur_c = fgetc(input);
 	}
+
+	while (debinarizer->codesLeft())
+	{
+		debinarizer->readChar();
+		if (stringInCodeList(debinarizer->getTempCode()))
+		{
+			fprintf(output, "%c", decodificationTable[debinarizer->getTempCode()]);
+			debinarizer->resetTempCode();
+		}
+	}
+	fclose(input);
+	fclose(output);
 }
 
 /**
@@ -338,6 +351,7 @@ void Source::showProperties()
   std::map<char, unsigned int>::iterator it;
   std::list <Symbol*>::iterator it2;
 
+#ifdef MODULO1
   printf("Total number of symbols read: %d\n", totalSymbols);
   printf("The frequencies for this file are...\n");
 
@@ -349,8 +363,11 @@ void Source::showProperties()
 
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
     printf("%c => %f\n", (*it2)->getLabel(), (*it2)->getProbability());
-  
+
   printf("\n");
+#endif
+
+#ifdef MODULO2
   printf("The codifications for the symbols are...\n");
 
   for (it2 = symbolList.begin(); it2 != symbolList.end(); it2++)
@@ -358,4 +375,5 @@ void Source::showProperties()
     printf("%c => %s\n", (*it2)->getLabel(), ((*it2)->getCodification()).c_str());
   }
   printf("\n");
+#endif
 }

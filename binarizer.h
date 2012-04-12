@@ -22,11 +22,29 @@ protected:
 	char cur_byte;
 public:
 	Binarizer();
-	void addStringToCode(char* code);
-	void processString(int cur_shift, int bits_to_process, char* code);
+	int getOffset();
+	void addStringToCode(const char* code);
+	void processString(int cur_shift, int bits_to_process, const char* code);
 	void processChar(char bit);
 	void finalizeEncoding();
-	void printCode();
+	std::string printCode();
+};
+
+class Debinarizer
+{
+protected:
+	std::string binaryCode;
+	std::string tempCode;
+	int cur_char;
+	int offset;
+public:
+	Debinarizer();
+	void setOffset(int offset);
+	void addCharToString(char character);
+	void resetTempCode();
+	void readChar();
+	std::string getTempCode();
+	bool codesLeft();
 };
 
 #endif

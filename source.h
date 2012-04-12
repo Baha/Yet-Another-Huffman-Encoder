@@ -15,7 +15,7 @@
 #include <queue>
 #include <string>
 #include "symbol.h"
-
+#include "binarizer.h"
 /**
  * The source class is the main class of the program.
  *
