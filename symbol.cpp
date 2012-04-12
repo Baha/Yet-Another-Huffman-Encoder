@@ -19,9 +19,7 @@ Symbol::Symbol()
  */
 bool Symbol::symbolIsEncodable(char symbol)
 {
-  return ((symbol >= 32 && symbol <= 126) ||
-					 symbol == ' ' ||
-					 symbol == '\n'); // might need some changes
+	return true;
 }
 
 /**

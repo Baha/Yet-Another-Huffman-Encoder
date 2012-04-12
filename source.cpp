@@ -297,6 +297,7 @@ void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 		debinarizer->readChar();
 		if (stringInCodeList(debinarizer->getTempCode()))
 		{
+			printf("%s => %c\n", debinarizer->getTempCode().c_str(), decodificationTable[debinarizer->getTempCode()]);
 			fprintf(output, "%c", decodificationTable[debinarizer->getTempCode()]);
 			debinarizer->resetTempCode();
 		}
