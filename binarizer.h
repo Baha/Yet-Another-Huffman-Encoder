@@ -54,9 +54,16 @@ protected:
 	 * on it.
 	 */
 	char cur_byte;
+  /**
+   * "total_bytes" counts the number of total bytes
+   * we pushed into the code (length functions fail).
+   */
+   unsigned int total_bytes;
 public:
 	Binarizer();
+  int getCodeLength();
 	int getOffset();
+  std::string getBinaryCode();
 	void addStringToCode(const char* code);
 	void processString(int cur_shift, int bits_to_process, const char* code);
 	void processChar(char bit);

@@ -9,8 +9,14 @@ Binarizer::Binarizer()
 	binaryCode = "";
 	bits_used = 0;
 	cur_byte = 0;
+  total_bytes = 0;
 }
 
+int Binarizer::getCodeLength()
+{
+  finalizeEncoding();
+  return binaryCode.size();
+}
 /**
  * Returns the number of non-used bits for the
  * current byte.
@@ -18,6 +24,11 @@ Binarizer::Binarizer()
 int Binarizer::getOffset()
 {
 	return (BYTE_LENGTH - bits_used) % BYTE_LENGTH;
+}
+
+std::string Binarizer::getBinaryCode()
+{
+  return this->binaryCode;
 }
 
 /**
@@ -88,6 +99,7 @@ void Binarizer::processChar(char bit)
 		binaryCode.push_back(cur_byte);
 		cur_byte = 0;
 		bits_used = 0;
+    total_bytes++;
 	}
 }
 
@@ -98,7 +110,11 @@ void Binarizer::processChar(char bit)
 void Binarizer::finalizeEncoding()
 {
 	if (bits_used != 0)
-		binaryCode.push_back(cur_byte);
+	{
+    binaryCode.push_back(cur_byte);
+    bits_used = 0;
+    total_bytes++;
+  }
 }
 
 /**
