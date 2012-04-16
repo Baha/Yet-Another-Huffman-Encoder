@@ -3,7 +3,8 @@ practica de COD de Adrian Palacios Corella.
 
 La opcion que escogio el autor fue la tercera (completa), por lo
 que se ha tratado de configurar unas cuantas pruebas para probar
-los cuatro modulos por separado.
+los cuatro modulos por separado. Para una breve explicacion del
+proyecto, puede consultarse el ficher pdf en la carpeta "guide".
 
 Se ha creado un make que puede usarse del siguiente modo:
 
