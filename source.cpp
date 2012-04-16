@@ -226,7 +226,6 @@ void Source::writeCodifiedFile(char* inputFileName)
   // write serial
   fprintf(output, "%s ", (this->getSerial().c_str())); 
 
-  // a partir de aqui, operar con los ficheros
   cur_input = fgetc(input);
 
   while (cur_input != EOF)
@@ -241,12 +240,7 @@ void Source::writeCodifiedFile(char* inputFileName)
   unsigned int code_length = binarizer->getCodeLength();
 
   for (int i = 0; i < code_length; i++)
-  {
     fprintf(output, "%c", code[i]);
-  }
-  //fprintf(output, "%s", (binarizer->printCode()).c_str());
-  //debug
-  printf("length: %d\n", (int)strlen(binarizer->printCode().c_str()));
 
   fclose(input);
   fclose(output);
@@ -276,17 +270,8 @@ void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 	int offset;
   int n_chars;
 
-	// delete ' '
-	fgetc(input);
-	// get offset
-	/*offset = fgetc(input) - '0';
-	debinarizer->setOffset(offset);
-	// delete '\n'
-	fgetc(input);
-*/
   fscanf(input, " %d %d\n", &offset, &n_chars);
   debinarizer->setOffset(offset);
-  printf("Offset : %d N_Chars : %d\n", offset, n_chars);
 
 	buildSymbolList();
 	buildCodeList();
@@ -307,18 +292,16 @@ void Source::writeUncodifiedFile(FILE* input, char* outputFileName)
 		cur_c = fgetc(input);
 	}
 
-  if (cur_c == EOF) printf("OK\n");
-
 	while (debinarizer->codesLeft())
 	{
 		debinarizer->readChar();
 		if (stringInCodeList(debinarizer->getTempCode()))
 		{
-			//printf("%s => %c\n", debinarizer->getTempCode().c_str(), decodificationTable[debinarizer->getTempCode()]);
 			fprintf(output, "%c", decodificationTable[debinarizer->getTempCode()]);
 			debinarizer->resetTempCode();
 		}
 	}
+
 	fclose(input);
 	fclose(output);
 }

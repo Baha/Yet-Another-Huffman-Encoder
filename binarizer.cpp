@@ -9,9 +9,12 @@ Binarizer::Binarizer()
 	binaryCode = "";
 	bits_used = 0;
 	cur_byte = 0;
-  total_bytes = 0;
+  offset = 0;
 }
 
+/**
+ * A getter for the size of the "binaryCode".
+ */
 int Binarizer::getCodeLength()
 {
   finalizeEncoding();
@@ -23,9 +26,12 @@ int Binarizer::getCodeLength()
  */
 int Binarizer::getOffset()
 {
-	return (BYTE_LENGTH - bits_used) % BYTE_LENGTH;
+  return this->offset;
 }
 
+/**
+ * A getter for the attribute "binaryCode".
+ */
 std::string Binarizer::getBinaryCode()
 {
   return this->binaryCode;
@@ -99,7 +105,6 @@ void Binarizer::processChar(char bit)
 		binaryCode.push_back(cur_byte);
 		cur_byte = 0;
 		bits_used = 0;
-    total_bytes++;
 	}
 }
 
@@ -112,8 +117,8 @@ void Binarizer::finalizeEncoding()
 	if (bits_used != 0)
 	{
     binaryCode.push_back(cur_byte);
+    offset = (BYTE_LENGTH - bits_used);
     bits_used = 0;
-    total_bytes++;
   }
 }
 

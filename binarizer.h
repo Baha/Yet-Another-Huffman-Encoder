@@ -54,11 +54,11 @@ protected:
 	 * on it.
 	 */
 	char cur_byte;
-  /**
-   * "total_bytes" counts the number of total bytes
-   * we pushed into the code (length functions fail).
-   */
-   unsigned int total_bytes;
+	/**
+	 * The "offset" is a number that contains the number of non-used
+	 * bits at the last byte of the codified file.
+	 */
+   unsigned int offset;
 public:
 	Binarizer();
   int getCodeLength();
